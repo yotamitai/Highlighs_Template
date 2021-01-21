@@ -6,14 +6,13 @@ import gym
 import pandas as pd
 from os.path import join, basename
 
-from Highlights.get_agent import get_agent
-from Highlights.get_traces import get_traces
-from Highlights.utils import create_video, make_clean_dirs, pickle_save
-from Highlights.highlights_state_selection import compute_states_importance, highlights, \
-    highlights_div
-from Highlights.get_trajectories import states_to_trajectories, trajectories_by_importance, \
+from get_agent import get_agent
+from get_traces import get_traces
+from utils import create_video, make_clean_dirs, pickle_save
+from highlights_state_selection import compute_states_importance, highlights, highlights_div
+from get_trajectories import states_to_trajectories, trajectories_by_importance, \
     get_trajectory_images
-from Highlights.ffmpeg import merge_and_fade
+from ffmpeg import merge_and_fade
 
 
 def get_highlights(args):

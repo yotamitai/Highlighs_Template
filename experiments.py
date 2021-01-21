@@ -1,5 +1,5 @@
 import argparse
-from Highlights.get_highlights import get_highlights
+from get_highlights import get_highlights
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='RL Agent runner')

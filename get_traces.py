@@ -1,6 +1,8 @@
 from os.path import join
+
 import xxhash
-from Highlights.utils import Trace, State, pickle_save, pickle_load
+
+from utils import Trace, State, pickle_save, pickle_load
 
 
 def get_traces(environment, agent, agent_args, args):
@@ -31,26 +33,12 @@ def get_single_trace(env, agent, trace_idx, agent_traces, states_dict, kwargs, a
     """Implement a single trace while using the Trace and State classes"""
     trace = Trace()
     # ********* Implement here *****************
-    old_obs = env.reset()
-    helper, behavior_tracker, video_callable = kwargs['helper'], kwargs['behavior_tracker'], kwargs['video_callable']
-    old_s = helper.get_state_from_observation(old_obs, 0, False)
-    t = 0
-    lilies_reached = 0
+    curr_obs = env.reset()
     done = False
     while not done:
-        a = agent.act(old_s)
+        a = agent.act(curr_obs)
         obs, r, done, infos = env.step(a)
-        s = helper.get_state_from_observation(obs, r, done)
-        if s == 1036:
-            lilies_reached += 1
-            done = True if lilies_reached==2 else False
-        r = helper.get_reward(old_s, a, r, s, done)
-        agent.update(old_s, a, r, s)
-        helper.update_stats(trace_idx, t, old_obs, obs, old_s, a, r, s)
-        old_s_temp = old_s
-        old_s = s
-        old_obs = obs
-        t += 1
+
 
         # *******************************
         """Add step to trace"""
@@ -61,12 +49,11 @@ def get_single_trace(env, agent, trace_idx, agent_traces, states_dict, kwargs, a
         trace.actions.append(a)
         """state"""
         state_img = env.render()
-        state_q_values = agent.q[old_s_temp]
+        state_q_values = None
         features = None
-        # state_id = xxhash.xxh64(state_img.tobytes(), seed=0).hexdigest()
-        # if state_id not in states_dict.keys():
-        state_id = (trace_idx, t)
+        state_id = xxhash.xxh64(state_img.tobytes(), seed=0).hexdigest()
+        if state_id not in states_dict.keys():
+            states_dict[state_id] = State(state_id, obs, state_q_values, features, state_img)
         trace.states.append(state_id)
-        states_dict[state_id] = State(state_id, obs, state_q_values, features, state_img)
 
     agent_traces.append(trace)

@@ -1,7 +1,7 @@
 from os.path import join
 import numpy as np
 
-from Highlights.utils import make_clean_dirs, pickle_load, pickle_save
+from utils import make_clean_dirs, pickle_load, pickle_save
 
 
 class Trajectory(object):
