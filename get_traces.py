@@ -42,11 +42,7 @@ def get_single_trace(env, agent, trace_idx, agent_traces, states_dict, kwargs, a
 
         # *******************************
         """Add step to trace"""
-        trace.reward_sum += r
-        trace.length += 1
-        trace.obs.append(obs), trace.rewards.append(r)
-        trace.dones.append(done), trace.infos.append(infos)
-        trace.actions.append(a)
+        trace.update(obs, r, done, infos, a)
         """state"""
         state_img = env.render()
         state_q_values = None

@@ -20,6 +20,15 @@ class Trace(object):
         self.length = 0
         self.states = []
 
+    def update(self, obs, r, done, infos, a):
+        self.obs.append(obs)
+        self.rewards.append(r)
+        self.dones.append(done)
+        self.infos.append(infos)
+        self.actions.append(a)
+        self.reward_sum += r
+        self.length += 1
+
 
 class State(object):
     def __init__(self, name, obs, action_vector, feature_vector, img):

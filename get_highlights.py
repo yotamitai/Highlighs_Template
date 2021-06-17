@@ -21,7 +21,6 @@ def get_highlights(args):
     make_clean_dirs(args.output_dir)
 
     env, agent, agent_args = get_agent(args)
-    [env.reset() for _ in range(5)]
     traces, states = get_traces(env, agent, agent_args, args)
 
     """highlights algorithm"""
