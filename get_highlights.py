@@ -4,7 +4,7 @@ import random
 
 import gym
 import pandas as pd
-from os.path import join, basename
+from os.path import join, basename, abspath
 
 from get_agent import get_agent
 from get_traces import get_traces
@@ -101,8 +101,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     """agent parameters"""
-    args.agent_dir = '/home/yotama/Local_Git/InterestingnessXRL/Agent_Comparisons/agents/Expert_Mid'
-    args.results_dir = '/home/yotama/Local_Git/InterestingnessXRL/Highlights/results'
+    args.agent_dir = abspath('agents/Expert_Mid')
+    args.results_dir = abspath('results')
     args.num_episodes = 1  # max 2000 (defined in configuration.py)
     args.fps = 2
     args.verbose = True
