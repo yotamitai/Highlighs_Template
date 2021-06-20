@@ -40,16 +40,15 @@ def get_single_trace(env, agent, trace_idx, agent_traces, states_dict, kwargs, a
         obs, r, done, infos = env.step(a)
 
 
-        # *******************************
-        """Add step to trace"""
-        trace.update(obs, r, done, infos, a)
-        """state"""
-        state_img = env.render()
-        state_q_values = None
-        features = None
-        state_id = xxhash.xxh64(state_img.tobytes(), seed=0).hexdigest()
-        if state_id not in states_dict.keys():
-            states_dict[state_id] = State(state_id, obs, state_q_values, features, state_img)
-        trace.states.append(state_id)
+        """Generate State"""
+        state_img = env.render(mode='rgb_array')
+        state_q_values = agent.get_state_action_values(obs)
+        features = NotImplemented #TODO implement here
+        state_id = (trace_idx, trace.length)
+        states_dict[state_id] = State(state_id, obs, state_q_values, features, state_img)
+        """Add step and state to trace"""
+        trace.update(obs, r, done, infos, a, state_id)
+
+
 
     agent_traces.append(trace)

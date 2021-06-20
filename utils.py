@@ -20,13 +20,14 @@ class Trace(object):
         self.length = 0
         self.states = []
 
-    def update(self, obs, r, done, infos, a):
+    def update(self, obs, r, done, infos, a, state_id):
         self.obs.append(obs)
         self.rewards.append(r)
         self.dones.append(done)
         self.infos.append(infos)
         self.actions.append(a)
         self.reward_sum += r
+        self.states.append(state_id)
         self.length += 1
 
 
