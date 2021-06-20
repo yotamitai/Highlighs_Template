@@ -1,6 +1,5 @@
 from os.path import join
 
-import xxhash
 
 from utils import Trace, State, pickle_save, pickle_load
 
