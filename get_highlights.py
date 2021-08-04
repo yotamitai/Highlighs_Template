@@ -1,6 +1,8 @@
 import argparse
+import json
 from datetime import datetime
 import random
+from pathlib import Path
 
 import gym
 import pandas as pd
@@ -8,7 +10,7 @@ from os.path import join, basename, abspath
 
 from get_agent import get_agent
 from get_traces import get_traces
-from utils import create_video, make_clean_dirs, pickle_save
+from utils import create_video, make_clean_dirs, pickle_save, pickle_load
 from highlights_state_selection import compute_states_importance, highlights, highlights_div
 from get_trajectories import states_to_trajectories, trajectories_by_importance, \
     get_trajectory_images
@@ -19,9 +21,18 @@ def get_highlights(args):
     args.output_dir = join(abspath('results'), '_'.join(
         [args.name, datetime.now().strftime("%H:%M:%S_%d-%m-%Y")]))
     make_clean_dirs(args.output_dir)
+    with Path(join(args.output_dir,'metadata.json')).open('w') as f:
+        json.dump(vars(args), f, sort_keys=True, indent=4)
 
-    env, agent, agent_args = get_agent(args)
-    traces, states = get_traces(env, agent, agent_args, args)
+    if args.load_dir:
+        """Load traces and state dictionary"""
+        traces = pickle_load(join(args.load_dir, 'Traces.pkl'))
+        states = pickle_load(join(args.load_dir, 'States.pkl'))
+        if args.verbose: print(f"Highlights {15 * '-' + '>'} Traces & States Loaded")
+    else:
+        env, agent = get_agent(args.load_path)
+        env.args = args
+        traces, states = get_traces(env, agent, args)
 
     """highlights algorithm"""
     data = {
