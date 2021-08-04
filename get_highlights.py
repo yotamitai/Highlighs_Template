@@ -19,9 +19,9 @@ from ffmpeg import merge_and_fade
 
 def get_highlights(args):
     args.output_dir = join(abspath('results'), '_'.join(
-        [args.name, datetime.now().strftime("%H:%M:%S_%d-%m-%Y")]))
+        [datetime.now().strftime("%Y-%m-%d %H:%M:%S").replace(' ', '_'), args.name]))
     make_clean_dirs(args.output_dir)
-    with Path(join(args.output_dir,'metadata.json')).open('w') as f:
+    with Path(join(args.output_dir, 'metadata.json')).open('w') as f:
         json.dump(vars(args), f, sort_keys=True, indent=4)
 
     if args.load_dir:
@@ -126,7 +126,6 @@ if __name__ == '__main__':
     parser.add_argument('-loadTraj', '--load_last_trajectories',
                         help='load previously generated trajectories', type=bool, default=False)
     args = parser.parse_args()
-
 
     # RUN
     get_highlights(args)
