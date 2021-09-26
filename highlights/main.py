@@ -36,7 +36,7 @@ def output_and_metadata(args):
 
 def main(args):
     output_and_metadata(args)
-    states, all_trajectories, summary_trajectories = get_highlights(args)
+    states, summary_trajectories = get_highlights(args)
     save_videos(states, summary_trajectories, args)
 
 
