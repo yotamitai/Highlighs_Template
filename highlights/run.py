@@ -1,5 +1,7 @@
 import argparse
 
+from highlights.main import main
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='HIGHLIGHTS')
     parser.add_argument('-a', '--name', help='agent name', type=str, default="Agent-0")
