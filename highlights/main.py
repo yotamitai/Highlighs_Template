@@ -7,15 +7,7 @@ from pathlib import Path
 from highlights.ffmpeg import merge_and_fade
 from highlights.get_highlights import get_highlights
 from highlights.get_trajectories import get_trajectory_images
-from highlights.utils import pickle_save, create_video
-
-
-def save_executions(traces, states, all_trajectories, args):
-    """Save data used for this run"""
-    pickle_save(traces, join(args.output_dir, 'Traces.pkl'))
-    pickle_save(states, join(args.output_dir, 'States.pkl'))
-    pickle_save(all_trajectories, join(args.output_dir, 'Trajectories.pkl'))
-    if args.verbose: print(f"Highlights {15 * '-' + '>'} Run Configurations Saved")
+from highlights.utils import create_video
 
 
 def save_videos(states, summary_trajectories, args):
@@ -44,6 +36,11 @@ def output_and_metadata(args):
 
 def main(args):
     output_and_metadata(args)
-    traces, states, all_trajectories, summary_trajectories = get_highlights(args)
-    save_executions(traces, states, all_trajectories, args)
+    states, all_trajectories, summary_trajectories = get_highlights(args)
     save_videos(states, summary_trajectories, args)
+
+
+
+
+
+

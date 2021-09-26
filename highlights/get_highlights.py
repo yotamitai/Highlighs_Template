@@ -1,20 +1,15 @@
 import argparse
-import json
-from datetime import datetime
 import random
-from pathlib import Path
 
 import gym
 import pandas as pd
-from os.path import join, basename, abspath
+from os.path import join
 
 from get_agent import get_agent
 from get_traces import get_traces
-from utils import create_video, make_clean_dirs, pickle_save, pickle_load
+from utils import pickle_save, pickle_load
 from highlights_state_selection import compute_states_importance, highlights, highlights_div
-from get_trajectories import states_to_trajectories, trajectories_by_importance, \
-    get_trajectory_images
-from ffmpeg import merge_and_fade
+from get_trajectories import states_to_trajectories, trajectories_by_importance
 
 
 def get_highlights(args):
@@ -30,6 +25,10 @@ def get_highlights(args):
         traces, states = get_traces(env, agent, args)
         env.close()
         del gym.envs.registration.registry.env_specs[env.spec.id]
+
+    """Save data used for this run in output dir"""
+    pickle_save(traces, join(args.output_dir, 'Traces.pkl'))
+    pickle_save(states, join(args.output_dir, 'States.pkl'))
 
     """highlights algorithm"""
     data = {
@@ -64,6 +63,8 @@ def get_highlights(args):
 
     # random order
     if args.randomized: random.shuffle(summary_trajectories)
+    """Save trajectories used for this run in output dir"""
+    pickle_save(all_trajectories, join(args.output_dir, 'Trajectories.pkl'))
 
     return
 
