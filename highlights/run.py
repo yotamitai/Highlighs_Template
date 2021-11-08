@@ -30,6 +30,10 @@ if __name__ == '__main__':
                         help='load previously generated traces', type=bool, default=False)
     parser.add_argument('-loadTraj', '--load_last_trajectories',
                         help='load previously generated trajectories', type=bool, default=False)
+    parser.add_argument('--highlights_div',
+                        help='load previously generated trajectories', type=bool, default=False)
+    parser.add_argument('--div_coefficient',
+                        help='load previously generated trajectories', type=int, default=2)
     args = parser.parse_args()
 
     # RUN

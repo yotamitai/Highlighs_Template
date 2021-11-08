@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from os import makedirs
+from os import makedirs, getpid
 from os.path import join, abspath
 from pathlib import Path
 
@@ -27,8 +27,8 @@ def save_videos(states, summary_trajectories, args):
 
 
 def output_and_metadata(args):
-    args.output_dir = join(abspath('results'), '_'.join(
-        [datetime.now().strftime("%Y-%m-%d %H:%M:%S").replace(' ', '_'), args.name]))
+    log_name = 'run_{}_{}'.format(datetime.now().strftime("%Y-%m-%d_%H:%M:%S"), getpid())
+    args.output_dir = join(abspath('results'), log_name)
     makedirs(args.output_dir)
     with Path(join(args.output_dir, 'metadata.json')).open('w') as f:
         json.dump(vars(args), f, sort_keys=True, indent=4)

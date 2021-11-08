@@ -13,7 +13,6 @@ from get_trajectories import states_to_trajectories, trajectories_by_importance
 
 
 def get_highlights(args):
-
     if args.load_dir:
         """Load traces and state dictionary"""
         traces = pickle_load(join(args.load_dir, 'Traces.pkl'))
@@ -31,10 +30,16 @@ def get_highlights(args):
     pickle_save(states, join(args.output_dir, 'States.pkl'))
 
     """highlights algorithm"""
-    data = {
-        'state': list(states.keys()),
-        'q_values': [x.observed_actions for x in states.values()]
-    }
+    a, b, c = states[(0, 0)].image.shape
+    data = {'state': list(states.keys()),
+            'q_values': [x.observed_actions for x in states.values()],
+            'features': [x.image.reshape(a * b * c) for x in states.values()]}
+
+    if args.highlights_div:
+        i = len(traces[0].states) // 2
+        threshold = args.div_coefficient * (
+            sum(states[(0, i)].image.reshape(a * b * c) - states[(0, i + 1)].image.reshape(
+                a * b * c)))
     q_values_df = pd.DataFrame(data)
 
     """importance by state"""
@@ -45,11 +50,14 @@ def get_highlights(args):
     """get highlights"""
     if args.trajectory_importance == "single_state":
         """highlights importance by single state importance"""
-        summary_states = highlights(highlights_df, traces, args.num_trajectories,
-                                    args.trajectory_length, args.minimum_gap, args.overlay_limit)
-        # summary_states = highlights_div(highlights_df, traces, args.num_trajectories,
-        #                             args.trajectory_length,
-        #                             args.minimum_gap)
+        trace_lengths = {k: len(v.states) for k, v in enumerate(traces)}
+        if args.highlights_div:
+            summary_states = highlights_div(highlights_df, trace_lengths, args.num_trajectories,
+                                            args.trajectory_length, args.minimum_gap,
+                                            threshold=threshold)
+        else:
+            summary_states = highlights(highlights_df, trace_lengths, args.num_trajectories,
+                                        args.trajectory_length, args.minimum_gap)
         all_trajectories = states_to_trajectories(summary_states, state_importance_dict)
         summary_trajectories = all_trajectories
 
@@ -67,4 +75,3 @@ def get_highlights(args):
     pickle_save(all_trajectories, join(args.output_dir, 'Trajectories.pkl'))
 
     return states, summary_trajectories
-
